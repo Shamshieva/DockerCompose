@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  db:
+    ports:
+      - "5433:5432"
+    container_name: postgresql
+    image: postgres
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USERNAME=postgres
+    restart: unless-stopped
+  backend:
+    build: .
+    container_name: user_app
+    ports:
+      - "7070:7070"
+    environment:
+      db_url: jdbc:postgresql://db:5432/test
+      db_username: postgres
+      db_password: 1234
+    depends_on:
+      - db
+    restart: unless-stopped
